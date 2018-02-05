@@ -4,48 +4,42 @@
 \alias{Apply}
 \title{Wrapper for Applying Atomic Functions to Arrays.}
 \usage{
-Apply(data, margins = NULL, AtomicFun, ..., inverse_margins = NULL, parallel = FALSE,
-      ncores = NULL)
+Apply(data, target_dims = NULL, AtomicFun, ..., output_dims = NULL,
+  margins = NULL, ncores = NULL)
 }
 \arguments{
 \item{data}{A single object (vector, matrix or array) or a list of objects. They must be in the same order as expected by AtomicFun.}
 
-\item{margins}{List of vectors containing the margins for the input objects to be split by. Or, if there is a single vector of margins specified and a list of objects in data, then the single set of margins is applied over all objects. These vectors can contain either integers specifying the dimension position, or characters corresponding to the dimension names. If both margins and inverse_margins are specified, margins takes priority over inverse_margins.}
+\item{target_dims}{List of vectors containing the dimensions to be input into AtomicFun for each of the objects in the data. These vectors can contain either integers specifying the dimension position, or characters corresponding to the dimension names. This parameter is mandatory if margins is not specified. If both margins and target_dims are specified, margins takes priority over target_dims.}
 
 \item{AtomicFun}{Function to be applied to the arrays.}
 
 \item{...}{Additional arguments to be used in the AtomicFun.}
 
-\item{inverse_margins}{List of vectors containing the dimensions to be input into AtomicFun for each of the objects in the data. These vectors can contain either integers specifying the dimension position, or characters corresponding to the dimension names. If both margins and inverse_margins are specified, margins takes priority over inverse_margins.}
+\item{output_dims}{Optional list of vectors containing the names of the dimensions to be output from the AtomicFun for each of the objects it returns (or a single vector if the function has only one output).}
 
-\item{parallel}{Logical, should the function be applied in parallel.}
+\item{margins}{List of vectors containing the margins for the input objects to be split by. Or, if there is a single vector of margins specified and a list of objects in data, then the single set of margins is applied over all objects. These vectors can contain either integers specifying the dimension position, or characters corresponding to the dimension names. If both margins and target_dims are specified, margins takes priority over target_dims.}
 
-\item{ncores}{The number of cores to use for parallel computation.}
+\item{ncores}{The number of multicore threads to use for parallel computation.}
 }
 \value{
-Array or matrix or vector resulting from AtomicFun.
+List of arrays or matrices or vectors resulting from applying AtomicFun to data.
 }
 \description{
-Takes lists of multidimensional objects as input, which may have different numbers of dimensions and dimension lengths. The user can specify which dimensions of each array (or matrix) the function is to be applied over with the margins option. 
+This wrapper applies a given function, which takes N [multi-dimensional] arrays as inputs (which may have different numbers of dimensions and dimension lengths), and applies it to a list of N [multi-dimensional] arrays with at least as many dimensions as expected by the given function. The user can specify which dimensions of each array (or matrix) the function is to be applied over with the \code{margins} or \code{target_dims} option. A user can apply a function that receives (in addition to other helper parameters) 1 or more arrays as input, each with a different number of dimensions, and returns any number of multidimensional arrays. The target dimensions can be specified by their names. It is recommended to use this wrapper with multidimensional arrays with named dimensions.
 }
 \details{
-A user can apply a function that receives 1 or more objects as input, each with a different number of dimensions, and returns as a result a single array with any number of dimensions.
+When using a single object as input, Apply is almost identical to the apply function. For multiple input objects, the output array will have dimensions equal to the dimensions specified in 'margins'.
 }
 \examples{
 #Change in the rate of exceedance for two arrays, with different 
 #dimensions, for some matrix of exceedances.
-array_1 <- array(rnorm(2000), c(10,10,20)) # array with 20 timesteps
-array_2 <- array(rnorm(1000), c(10, 10, 15)) # array with 15 timesteps
-thresholds <- matrix(rnorm(100), 10, 10) # matrix of thresholds (no timesteps)
-
-# Function for calculating the change in the frequency of exceedances over the
-#thresholds for array_1 relative to array_2 (percentage change).
-
-test_fun <- function(x, y, z) {(((sum(x > z) / (length(x))) / 
-                                (sum(y > z) / (length(y)))) * 100) - 100}
-data = list(array_1, array_2, thresholds)
+data = list(array(rnorm(2000), c(10,10,20)), array(rnorm(1000), c(10,10,10)), 
+            array(rnorm(100), c(10, 10)))
+test_fun <- function(x, y, z) {((sum(x > z) / (length(x))) / 
+                               (sum(y > z) / (length(y)))) * 100}
 margins = list(c(1, 2), c(1, 2), c(1,2))
-test <- Apply(data = data, margins = margins, AtomicFun = "test_fun")
+test <- Apply(data, margins = margins, AtomicFun = "test_fun")
 }
 \references{
 Wickham, H (2011), The Split-Apply-Combine Strategy for Data Analysis, Journal of Statistical Software.
