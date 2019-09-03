@@ -1,13 +1,15 @@
 #' Apply Functions to Multiple Multidimensional Arrays or Vectors
 #'
-#' This function efficiently applies a given function, which takes N vectors or multi-dimensional arrays as inputs (which may have different numbers of dimensions and dimension lengths), and applies it to a list of N vectors or multi-dimensional arrays with at least as many dimensions as expected by the given function. The user can specify which dimensions of each array the function is to be applied over with the \code{margins} or \code{target_dims} parameters. The function to be applied can receive other helper parameters and return any number of numeric vectors or multidimensional arrays. The target dimensions or margins can be specified by their names, as long as the inputs are provided with dimension names (recommended). This function can also use multi-core in a transparent way if requested via the \code{ncores} parameter.\cr\cr The following steps help to understand how \code{Apply} works:\cr\cr - The function receives N arrays with Dn dimensions each.\cr - The user specifies, for each of the arrays, which of its dimensions are 'target' dimensions (dimensions which the function provided in 'fun' operates with) and which are 'margins' (dimensions to be looped over).\cr - \code{Apply} will generate an array with as many dimensions as margins in all of the input arrays. If a margin is repeated across different inputs, it will appear only once in the resulting array.\cr - For each element of this resulting array, the function provided in the parameter'fun' is applied to the corresponding sub-arrays in 'data'.\cr - If the function returns a vector or a multidimensional array, the additional dimensions will be prepended to the resulting array (in left-most positions).\cr - If the provided function returns more than one vector or array, the process above is carried out for each of the outputs, resulting in a list with multiple arrays, each with the combination of all target dimensions (at the right-most positions) and resulting dimensions (at the left-most positions).
+#' This function efficiently applies a given function, which takes N vectors or multi-dimensional arrays as inputs (which may have different numbers of dimensions and dimension lengths), and applies it to a list of N vectors or multi-dimensional arrays with at least as many dimensions as expected by the given function. The user can specify which dimensions of each array the function is to be applied over with the \code{margins} or \code{target_dims} parameters. The function to be applied can receive other helper parameters and return any number of vectors or multidimensional arrays. The target dimensions or margins can be specified by their names, as long as the inputs are provided with dimension names (recommended). This function can also use multi-core in a transparent way if requested via the \code{ncores} parameter.\cr\cr The following steps help to understand how \code{Apply} works:\cr\cr - The function receives N arrays with Dn dimensions each.\cr - The user specifies, for each of the arrays, which of its dimensions are 'target' dimensions (dimensions which the function provided in 'fun' operates with) and which are 'margins' (dimensions to be looped over).\cr - \code{Apply} will generate an array with as many dimensions as margins in all of the input arrays. If a margin is repeated across different inputs, it will appear only once in the resulting array.\cr - For each element of this resulting array, the function provided in the parameter'fun' is applied to the corresponding sub-arrays in 'data'.\cr - If the function returns a vector or a multidimensional array, the additional dimensions will be prepended to the resulting array (in left-most positions).\cr - If the provided function returns more than one vector or array, the process above is carried out for each of the outputs, resulting in a list with multiple arrays, each with the combination of all target dimensions (at the right-most positions) and resulting dimensions (at the left-most positions).
 #'
-#' @param data One or a list of numeric object (vector, matrix or array). They must be in the same order as expected by the function provided in the parameter 'fun'. The dimensions do not necessarily have to be ordered. If the 'target_dims' require a different order than the provided, \code{Apply} will automatically reorder the dimensions as needed.
+#' @param data One or a list of vectors, matrices or arrays. They must be in the same order as expected by the function provided in the parameter 'fun'. The dimensions do not necessarily have to be ordered. If the 'target_dims' require a different order than the provided, \code{Apply} will automatically reorder the dimensions as needed.
 #' @param target_dims One or a list of vectors (or NULLs) containing the dimensions to be input into fun for each of the objects in the data. If a single vector of target dimensions is specified and multiple inputs are provided in 'data, then the single set of target dimensions is re-used for all of the inputs. These vectors can contain either integers specifying the position of the dimensions, or character strings corresponding to the dimension names. This parameter is mandatory if 'margins' are not specified. If both 'margins' and 'target_dims' are specified, 'margins' takes priority.
-#' @param fun Function to be applied to the arrays. Must receive as many inputs as provided in 'data', each with as many dimensions as specified in 'target_dims' or as the total number of dimensions in 'data' minus the ones specified in 'margins'. The function can receive other additional fixed parameters (see parameter '...' of \code{Apply}). The function can return one or a list of numeric vectors or multidimensional arrays, optionally with dimension names which will be propagated to the final result. The returned list can optionally be named, with a name for each output, which will be propagated to the resulting array. The function can optionally be provided with the attributes 'target_dims' and 'output_dims'. In that case, the corresponding parameters of \code{Apply} do not need to be provided. The function can expect named dimensions for each of its inputs, in the same order as specified in 'target_dims' or, if no 'target_dims' have been provided, in the same order as provided in 'data'.
+#' @param fun Function to be applied to the arrays. Must receive as many inputs as provided in 'data', each with as many dimensions as specified in 'target_dims' or as the total number of dimensions in 'data' minus the ones specified in 'margins'. The function can receive other additional fixed parameters (see parameter '...' of \code{Apply}). The function can return one or a list of vectors or multidimensional arrays, optionally with dimension names which will be propagated to the final result. The returned list can optionally be named, with a name for each output, which will be propagated to the resulting array. The function can optionally be provided with the attributes 'target_dims' and 'output_dims'. In that case, the corresponding parameters of \code{Apply} do not need to be provided. The function can expect named dimensions for each of its inputs, in the same order as specified in 'target_dims' or, if no 'target_dims' have been provided, in the same order as provided in 'data'. The function can access the variable \code{.margin_indices}, a named numeric vector that provides the indices of the current iteration over the margins, as well as any other variables specified in the parameter \code{extra_info} or input attributes specified in the parameter \code{use_attributes}.
 #' @param ... Additional fixed arguments expected by the function provided in the parameter 'fun'.
 #' @param output_dims Optional list of vectors containing the names of the dimensions to be output from the fun for each of the objects it returns (or a single vector if the function has only one output).
 #' @param margins One or a list of vectors (or NULLs) containing the 'margin' dimensions to be looped over for each input in 'data'. If a single vector of margins is specified and multiple inputs are provided in 'data', then the single set of margins is re-used for all of the inputs. These vectors can contain either integers specifying the position of the margins, or character strings corresponding to the dimension names. If both 'margins' and 'target_dims' are specified, 'margins' takes priority.
+#' @param use_attributes List of vectors of character strings with names of attributes of each object in 'data' to be propagated to the subsets of data sent as inputs to the function specified in 'fun'. If this parameter is not specified (NULL), all attributes are dropped. This parameter can be specified as a named list (then the names of this list must match those of the names of parameter 'data'), or as an unnamed list (then the vectors of attribute names will be assigned in order to the input arrays in 'data').
+#' @param extra_info Named list of extra variables to be defined for them to be accessible from within the function specified in 'fun'. The variable names will automatically be prepended a heading dot ('.'). So, if the variable 'name = "Tony"' is sent through this parameter, it will be accessible from within 'fun' via '.name'.
 #' @param guess_dim_names Whether to automatically guess missing dimension names for dimensions of equal length across different inputs in 'data' with a warning (TRUE; default), or to crash whenever unnamed dimensions of equa length are identified across different inputs (FALSE).
 #' @param ncores The number of parallel processes to spawn for the use for parallel computation in multiple cores.
 #' @param split_factor Factor telling to which degree the input data should be split into smaller pieces to be processed by the available cores. By default (split_factor = 1) the data is split into 4 pieces for each of the cores (as specified in ncores). A split_factor of 2 will result in 8 pieces for each of the cores, and so on. The special value 'greatest' will split the input data into as many pieces as possible.
@@ -30,16 +32,19 @@
 #' @importFrom doParallel registerDoParallel
 #' @importFrom plyr splat llply
 #' @importFrom utils capture.output
+#' @importFrom stats setNames
 Apply <- function(data, target_dims = NULL, fun, ..., 
-                  output_dims = NULL, margins = NULL, guess_dim_names = TRUE,
+                  output_dims = NULL, margins = NULL, 
+                  use_attributes = NULL, extra_info = NULL,
+                  guess_dim_names = TRUE,
                   ncores = NULL, split_factor = 1) {
   # Check data
   if (!is.list(data)) {
     data <- list(data)
   }
-  if (any(!sapply(data, is.numeric))) {
-    stop("Parameter 'data' must be one or a list of numeric objects.")
-  }
+  #if (any(!sapply(data, is.numeric))) {
+  #  stop("Parameter 'data' must be one or a list of numeric objects.")
+  #}
   is_vector <- rep(FALSE, length(data))
   is_unnamed <- rep(FALSE, length(data))
   unnamed_dims <- c()
@@ -294,6 +299,102 @@ Apply <- function(data, target_dims = NULL, fun, ...,
     }
   }
 
+  # Check use_attributes
+  if (!is.null(use_attributes)) {
+    if (!is.list(use_attributes)) {
+      stop("Parameter 'use_attributes' must be a list.")
+    }
+    if (is.null(names(data)) && !is.null(names(use_attributes))) {
+      warning("Parameter 'use_attributes' provided with names, but ",
+              "no names provided for 'data'. All names will be ",
+              "disregarded.")
+      names(use_attributes) <- NULL
+    }
+    if (!is.null(names(use_attributes))) {
+      if (!all(sapply(names(use_attributes), function(x) nchar(x) > 0))) {
+        stop("If providing names for the list 'use_attributes', all ",
+             "components must be named.")
+      }
+      if (length(unique(names(use_attributes))) != 
+          length(names(use_attributes))) {
+        stop("The list in parameter 'use_attributes' must not ",
+             "contain repeated names.")
+      }
+      if (any(!(names(use_attributes) %in% names(data)))) {
+        stop("Provided some names in parameter 'use_attributes' not present ",
+             "in parameter 'data'.")
+      }
+      use_attributes <- use_attributes[names(data)]
+    } else {
+      if (length(use_attributes) != length(data)) {
+        warning("Provided different number of items in 'use_attributes' ",
+                "and in 'data'. Assuming same order.")
+      }
+      use_attributes <- use_attributes[1:length(data)]
+    }
+  } else {
+    use_attributes <- vector('list', length = length(data))
+  }
+  for (i in 1:length(data)) {
+    if (is.character(use_attributes[[i]])) {
+      use_attributes[[i]] <- as.list(use_attributes[[i]])
+    }
+    if (is.list(use_attributes[[i]])) {
+      if (length(use_attributes[[i]]) == 0) {
+        use_attributes[i] <- list(NULL)
+      } else {
+        if (!all(sapply(use_attributes[[i]], 
+              function(x) all(is.character(x) & nchar(x) > 0)))) {
+          stop("All entries in 'use_attributes' must be character strings ",
+               "of length > 0.")
+        }
+      }
+    } else if (!is.null(use_attributes[[i]])) {
+      stop("Parameter 'use_attributes' must be a list of character vectors or ",
+           "a list of lists of character vectors.")
+    }
+    for (j in seq_along(use_attributes[[i]])) {
+      if (length(use_attributes[[i]][[j]]) == 1 && 
+          use_attributes[[i]][[j]] == 'dim') {
+        stop("Requesting the attribute 'dim' via the parameter ",
+             "'use_attributes' is forbidden.")
+      }
+      found_entry <- FALSE
+      entry <- try({`[[`(attributes(data[[i]]), 
+                         use_attributes[[i]][[j]])}, silent = TRUE)
+      if ('try-error' %in% class(entry)) {
+        stop("Parameter 'use_attributes' contains some attribute names ",
+             "that are not present in the attributes of the corresponding ",
+             "object in parameter 'data'.")
+      }
+    }
+  }
+
+  # Check extra_info
+  if (is.null(extra_info)) {
+    extra_info <- list()
+  }
+  raise_error <- FALSE
+  if (!is.list(extra_info)) {
+    raise_error <- TRUE
+  } else if (length(extra_info) > 0) {
+    if (is.null(names(extra_info))) {
+      raise_error <- TRUE
+    }
+    if (any(sapply(names(extra_info), function(x) nchar(x) == 0))) {
+      raise_error <- TRUE
+    }
+    names(extra_info) <- paste0('.', names(extra_info))
+  }
+  if (raise_error) {
+    stop("Parameter 'extra_info' must be a list with all components named.")
+  }
+
+  # Check guess_dim_names
+  if (!is.logical(guess_dim_names)) {
+    stop("Parameter 'guess_dim_names' must be logical.")
+  }
+
   # Check ncores
   if (is.null(ncores)) {
     ncores <- 1
@@ -406,6 +507,13 @@ Apply <- function(data, target_dims = NULL, fun, ...,
     chunk_sizes <- c(chunk_sizes, total_size %% chunk_size)
   }
 
+  fun_env <- new.env(parent = parent.frame())
+  for (i in seq_along(extra_info)) {
+    assign(names(extra_info)[i], extra_info[[i]], envir = fun_env)
+  }
+  environment(fun) <- fun_env
+  splatted_f <- splat(fun)
+
   input_margin_weights <- vector('list', length(data))
   for (i in 1:length(data)) {
     marg_sizes <- dim(data[[i]])[margins[[i]]]
@@ -414,7 +522,6 @@ Apply <- function(data, target_dims = NULL, fun, ...,
   }
 
   # TODO: need to add progress bar
-  splatted_f <- splat(fun)
   # For a selected use case, these are the timings:
   #  - total: 17 s
   #    - preparation + post: 1 s
@@ -434,10 +541,29 @@ Apply <- function(data, target_dims = NULL, fun, ...,
     names(first_marg_indices) <- names(mad)
     sub_arrays_of_results <- list()
     found_first_sub_result <- FALSE
+    attributes_to_send <- vector('list', length = length(data))
     iteration_indices_to_take <- list()
     for (i in 1:length(data)) {
       iteration_indices_to_take[[i]] <- as.list(rep(TRUE, length(dim(data[[i]]))))
       names(iteration_indices_to_take[[i]]) <- names(dim(data[[i]]))
+      if (length(use_attributes[[i]]) > 0) {
+        attributes_to_send[[i]] <- list()
+        for (j in seq_along(use_attributes[[i]])) {
+          found_entry <- FALSE
+          entry <- try({`[[`(attributes(data[[i]]), 
+                             use_attributes[[i]][[j]])
+                       }, silent = TRUE)
+          if ('try-error' %in% class(entry)) {
+            stop("Unexpected error with the attributes of the inputs.") 
+          }
+          save_string <- "attributes_to_send[[i]]"
+          access_string <- "`[[`(attributes(data[[i]]), use_attributes[[i]][[j]])"
+          for (k in seq_along(use_attributes[[i]][[j]])) {
+            save_string <- paste0(save_string, '$', use_attributes[[i]][[j]][[k]])
+          }
+          eval(parse(text = paste(save_string, '<-', access_string)))
+        }
+      }
     }
 
     add_one_multidim <- function(index, dims) {
@@ -470,6 +596,10 @@ Apply <- function(data, target_dims = NULL, fun, ...,
         iteration_input[[i]] <- do.call('[', c(list(x = data[[i]]),
                                                iteration_indices_to_take[[i]],
                                                list(drop = FALSE)))
+        num_targets <- length(target_dims_names[[i]])
+        if (num_targets > 0) {
+          names(dim(iteration_input[[i]])) <- names(dim(data[[i]]))
+        }
         num_margins <- length(margins_names[[i]])
         if (num_margins > 0) {
           if (num_margins == length(dim(iteration_input[[i]]))) {
@@ -480,13 +610,21 @@ Apply <- function(data, target_dims = NULL, fun, ...,
             #if only one dim remains, make as.vector
           }
         }
+        attributes(iteration_input[[i]]) <- c(attributes(iteration_input[[i]]),
+                                              attributes_to_send[[i]])
       }
-      if (!is.null(mad)) {
-        first_marg_indices <- add_one_multidim(first_marg_indices, mad)
-      }
+
+      assign(".margin_indices", 
+             setNames(as.integer(first_marg_indices),
+                      names(first_marg_indices)), 
+             envir = fun_env)
 
       # SPLATTED_F
       result <- splatted_f(iteration_input, ...)
+
+      if (!is.null(mad)) {
+        first_marg_indices <- add_one_multidim(first_marg_indices, mad)
+      }
 
       # SUB-ITERATION OUTRO
       if (!is.list(result)) {

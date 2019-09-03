@@ -1,9 +1,9 @@
-52e417ccfe3f5913bb912ab975e15566 *DESCRIPTION
-1a25421331fccade566a5eff6adadbb4 *NAMESPACE
-dfbe05f9e7b9b5d9b0902c8c3636459e *R/Apply.R
-7d3b3e92e6e7fc76ca75cc277059781b *R/zzz.R
+3ff0be96d18f1234a403d8e10472603e *DESCRIPTION
+715e72a639d5a2f98dc2cfb9ac1542cd *NAMESPACE
+75e40acf5ab389c656cdce952d3fa472 *R/Apply.R
+ad6ffd508e9d30e59b25678d3df06158 *R/zzz.R
 98cc66408033225ce8730b3de3a22589 *README.md
-8cff8998b66597b7686f931477cca38b *man/Apply.Rd
+612687d3348fd0010dd40009734cf130 *man/Apply.Rd
 df1ca566af45b1e4cfd253bbf4139eb5 *tests/testthat.R
 211acf10215369d59e11c3d42193d5a3 *tests/testthat/test-sanity-checks.R
-1d1f847d3e041f6f2e507364d7792281 *tests/testthat/test-use-cases.R
+8680478ad0368ef883bd09c5ceb96ca4 *tests/testthat/test-use-cases.R

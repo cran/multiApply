@@ -1255,6 +1255,80 @@ test_that("real use case - standardization", {
 
 })
 
+# Test margin indices and extra info
+test_that("Margin indices and extra info are provided correctly.", {
+  a <- array(1:prod(1:6), dim = c(a = 1, b = 2, c = 3, d = 4, e = 5, f = 6))
+  b <- array(1:prod(c(1, 2, 3, 5, 6)), dim = c(a = 1, b = 2, c = 3, e = 5, f = 6))
+
+  attr(a, 'test_attr_a') <- 'test_a'
+  attr(b, 'test_attr_b') <- list(x = 1, z = 2)
+
+  f <- function(a, b) {
+    stopifnot(length(.margin_indices) == 3)
+    stopifnot(identical(names(.margin_indices), c('a', 'e', 'f')))
+    stopifnot(all(is.integer(.margin_indices)))
+    stopifnot(identical(.test_info, 'test'))
+    stopifnot(!is.null(attr(a, 'test_attr_a')))
+    stopifnot(identical(attr(a, 'test_attr_a'), 'test_a'))
+    stopifnot(!is.null(attr(b, 'test_attr_b')))
+    stopifnot(identical(attr(b, 'test_attr_b'), list(x = 1, z = 2)))
+  }
+
+  r <- multiApply::Apply(list(a, b), 
+                         list(c('b', 'c', 'd'), 
+                              c('b', 'c')),
+                         extra_info = list(test_info = 'test'),
+                         use_attributes = list(a = 'test_attr_a',
+                                               b = 'test_attr_b'),
+                         f)
+
+  r <- multiApply::Apply(list(a = a, b = b), 
+                         list(c('b', 'c', 'd'), 
+                              c('b', 'c')),
+                         extra_info = list(test_info = 'test'),
+                         use_attributes = list(a = 'test_attr_a',
+                                               b = 'test_attr_b'),
+                         f)
+
+  r <- multiApply::Apply(list(a = a, b = b), 
+                         list(c('b', 'c', 'd'), 
+                              c('b', 'c')),
+                         extra_info = list(test_info = 'test'),
+                         use_attributes = list(b = 'test_attr_b',
+                                               a = 'test_attr_a'),
+                         f)
+
+  attr(b, 'test_attr_b') <- list(x = 1, z = 2)
+  attr(b, 'z') <- 3
+
+  f <- function(a, b) {
+    stopifnot(identical(attr(b, 'test_attr_b')$z, 2))
+    stopifnot(identical(attr(b, 'z'), 3))
+  }
+
+  r <- multiApply::Apply(list(a = a, b = b), 
+                         list(c('b', 'c', 'd'), 
+                              c('b', 'c')),
+                         extra_info = list(test_info = 'test'),
+                         use_attributes = list(b = c('test_attr_b', 'z'),
+                                               a = 'test_attr_a'),
+                         f)
+
+  f <- function(a, b) {
+    stopifnot(identical(attr(b, 'test_attr_b')$z, 2))
+    stopifnot(is.null(attr(b, 'test_attr_b')$x))
+    stopifnot(is.null(attr(b, 'z')))
+  }
+
+  r <- multiApply::Apply(list(a = a, b = b), 
+                         list(c('b', 'c', 'd'), 
+                              c('b', 'c')),
+                         extra_info = list(test_info = 'test'),
+                         use_attributes = list(b = list(c('test_attr_b', 'z')),
+                                               a = 'test_attr_a'),
+                         f)
+})
+
 # Test .aperm2
 test_that(".aperm2", {
   data <- seq(as.POSIXct('1990-11-01'), 
@@ -1265,6 +1339,38 @@ test_that(".aperm2", {
     class(multiApply:::.aperm2(data, c(2, 1))),
     c('POSIXct', 'POSIXt')
   )
+})
+
+# Test dim names passed on properly
+test_that("Dimension names are propagated correctly.", {
+  a <- array(1:prod(1:6), dim = c(a = 1, b = 2, c = 3, d = 4, e = 5, f = 6))
+  b <- array(1:prod(c(1, 2, 3, 5, 6)), dim = c(a = 1, b = 2, c = 3, e = 5, f = 6))
+
+  f <- function(a, b) {
+    stopifnot(identical(names(dim(a)), c('b', 'c', 'd')))
+    stopifnot(identical(names(dim(b)), c('b', 'c')))
+  }
+
+  r <- multiApply::Apply(list(a, b), 
+                         list(c('b', 'c', 'd'), 
+                              c('b', 'c')), 
+                         f)
+})
+
+# Test nested environments are linked properly
+test_that("Nested environments are linked properly.", {
+  #create input
+  forecast <- array(dim = c('31', '12', '4'), 
+                    rnorm(31 * 12 * 4))
+  names(dim(forecast)) <- c('sday', 'syear', 'ensemble')
+
+  anomaly_simple <- function(data) {
+    avg <- Apply(data, c('syear', 'ensemble'), mean)[[1]]
+    anom <- Apply(data, c('sday'), function(x) x - avg)[[1]]
+    return(anom)
+  }
+
+  anomaly <- anomaly_simple(forecast)
 })
 
 # TODOS:

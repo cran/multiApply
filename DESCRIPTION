@@ -1,6 +1,6 @@
 Package: multiApply
 Title: Apply Functions to Multiple Multidimensional Arrays or Vectors
-Version: 2.0.1
+Version: 2.1.1
 Authors@R: c(
     person("BSC-CNS", role = c("aut", "cph")),
     person("Nicolau", "Manubens", , "nicolau.manubens@bsc.es", role = "aut"),
@@ -11,7 +11,7 @@ Description: The base apply function and its variants, as well as the related
     single argument (or a list of vectorized arguments in the case of mapply). The
     'multiApply' package extends this paradigm with its only function, Apply, which
     efficiently applies functions taking one or a list of multiple unidimensional
-    or multidimensional numeric arrays (or combinations thereof) as input. The input
+    or multidimensional arrays (or combinations thereof) as input. The input
     arrays can have different numbers of dimensions as well as different dimension
     lengths, and the applied function can return one or a list of unidimensional or
     multidimensional arrays as output. This saves development time by preventing the
@@ -31,11 +31,11 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.0
 NeedsCompilation: no
-Packaged: 2018-11-21 17:14:36 UTC; nmanuben
+Packaged: 2019-09-03 14:10:50 UTC; nperez
 Author: BSC-CNS [aut, cph],
   Nicolau Manubens [aut],
   Alasdair Hunter [aut],
   Nuria Perez [cre]
 Maintainer: Nuria Perez <nuria.perez@bsc.es>
 Repository: CRAN
-Date/Publication: 2018-11-23 23:40:03 UTC
+Date/Publication: 2019-09-03 15:40:02 UTC
