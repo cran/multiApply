@@ -507,7 +507,7 @@ Apply <- function(data, target_dims = NULL, fun, ...,
     chunk_sizes <- c(chunk_sizes, total_size %% chunk_size)
   }
 
-  fun_env <- new.env(parent = parent.frame())
+  fun_env <- new.env(parent = environment(fun))
   for (i in seq_along(extra_info)) {
     assign(names(extra_info)[i], extra_info[[i]], envir = fun_env)
   }
