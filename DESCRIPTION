@@ -1,6 +1,6 @@
 Package: multiApply
 Title: Apply Functions to Multiple Multidimensional Arrays or Vectors
-Version: 2.1.2
+Version: 2.1.3
 Authors@R: c(
     person("BSC-CNS", role = c("aut", "cph")),
     person("Nicolau", "Manubens", , "nicolau.manubens@bsc.es", role = "aut"),
@@ -31,11 +31,11 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.0
 NeedsCompilation: no
-Packaged: 2021-01-21 18:14:25 UTC; nperez
+Packaged: 2021-02-01 16:31:18 UTC; nperez
 Author: BSC-CNS [aut, cph],
   Nicolau Manubens [aut],
   Alasdair Hunter [aut],
   Nuria Perez [cre]
 Maintainer: Nuria Perez <nuria.perez@bsc.es>
 Repository: CRAN
-Date/Publication: 2021-01-21 19:10:02 UTC
+Date/Publication: 2021-02-02 00:20:02 UTC
