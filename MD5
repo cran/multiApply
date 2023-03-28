@@ -1,9 +1,7 @@
-a728e0dea17e0e1206f402d49c63bc13 *DESCRIPTION
-715e72a639d5a2f98dc2cfb9ac1542cd *NAMESPACE
-75e40acf5ab389c656cdce952d3fa472 *R/Apply.R
+1d6af4f325afe6a96cd1579ce0c5631f *DESCRIPTION
+fc0f7ef3d27ad258d09ea4ad6cb3c916 *NAMESPACE
+e862aa29638f29fc7c70cf9cbf7ac930 *NEWS.md
+bb842a1950697bfe6bf580fe0dac252b *R/Apply.R
 ad6ffd508e9d30e59b25678d3df06158 *R/zzz.R
-98cc66408033225ce8730b3de3a22589 *README.md
-612687d3348fd0010dd40009734cf130 *man/Apply.Rd
-df1ca566af45b1e4cfd253bbf4139eb5 *tests/testthat.R
-211acf10215369d59e11c3d42193d5a3 *tests/testthat/test-sanity-checks.R
-8680478ad0368ef883bd09c5ceb96ca4 *tests/testthat/test-use-cases.R
+bf29ba7842d9493d0255c6f8a553d591 *README.md
+cd4bf8894914e44a4e3cf80de32a74db *man/Apply.Rd

@@ -4,9 +4,19 @@
 \alias{Apply}
 \title{Apply Functions to Multiple Multidimensional Arrays or Vectors}
 \usage{
-Apply(data, target_dims = NULL, fun, ..., output_dims = NULL,
-  margins = NULL, use_attributes = NULL, extra_info = NULL,
-  guess_dim_names = TRUE, ncores = NULL, split_factor = 1)
+Apply(
+  data,
+  target_dims = NULL,
+  fun,
+  ...,
+  output_dims = NULL,
+  margins = NULL,
+  use_attributes = NULL,
+  extra_info = NULL,
+  guess_dim_names = TRUE,
+  ncores = NULL,
+  split_factor = 1
+)
 }
 \arguments{
 \item{data}{One or a list of vectors, matrices or arrays. They must be in the same order as expected by the function provided in the parameter 'fun'. The dimensions do not necessarily have to be ordered. If the 'target_dims' require a different order than the provided, \code{Apply} will automatically reorder the dimensions as needed.}
@@ -55,4 +65,3 @@ test <- Apply(data, target = list(3, 3, NULL), test_fun)
 \references{
 Wickham, H (2011), The Split-Apply-Combine Strategy for Data Analysis, Journal of Statistical Software.
 }
-

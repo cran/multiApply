@@ -31,7 +31,7 @@
 #' @importFrom foreach registerDoSEQ
 #' @importFrom doParallel registerDoParallel
 #' @importFrom plyr splat llply
-#' @importFrom utils capture.output
+#' @importFrom utils capture.output head
 #' @importFrom stats setNames
 Apply <- function(data, target_dims = NULL, fun, ..., 
                   output_dims = NULL, margins = NULL, 
@@ -666,6 +666,25 @@ Apply <- function(data, target_dims = NULL, fun, ...,
         if (!is.null(component_dims)) {
           atomic_fun_out_dims[[component]] <- component_dims
         }
+
+        # Check if component_dims matches the first_sub_result
+        if (found_first_sub_result) {
+          error_inconsistent_output <- FALSE
+          if (is.null(atomic_fun_out_dims[[component]])) {  # result[[component]] is a number
+            if (length(dim(sub_arrays_of_results[[component]])) != 1) {
+              error_inconsistent_output <- TRUE
+            }
+          } else if (!identical(atomic_fun_out_dims[[component]],
+                                head(dim(sub_arrays_of_results[[component]]),
+                                     length(dim(sub_arrays_of_results[[component]])) - 1))) {
+                                #NOTE: The last dim in sub_arrays_of_results[[component]] is chunk_sizes[m]
+              error_inconsistent_output <- TRUE
+          }
+          if (error_inconsistent_output) {
+            stop("Output '", names(sub_arrays_of_results)[[component]], "' doesn't have consistent output length among chunks.")
+          }
+        }
+
         if (length(result[[component]]) > 0) {
           sub_arrays_of_results[[component]][(1:prod(component_dims)) + 
             (n - 1) * prod(component_dims)] <- result[[component]]
@@ -697,6 +716,21 @@ Apply <- function(data, target_dims = NULL, fun, ...,
   parallel <- ncores > 1
   if (parallel) registerDoParallel(ncores)
   result <- llply(1:length(chunk_sizes), iteration, .parallel = parallel)
+
+  # Check if all the results have the same output length 
+  for (i_output in 1:sapply(result, length)[1]) {
+    result_i_output <- lapply(result, '[[', i_output)
+    dims_each_result <- lapply(result_i_output, dim)
+    tmp <- lapply(dims_each_result, length)
+    dims_each_result_without_chunk <- lapply(1:length(dims_each_result), function(ii) {
+                                        head(dims_each_result[[ii]], tmp[[ii]] - 1)
+                                      })
+
+    if (length(unique(dims_each_result_without_chunk)) != 1) {
+      stop("Output '", names(result[[1]])[i_output], "' doesn't have consistent output length among chunks.")
+    }
+  }
+
   if (parallel) registerDoSEQ()
   # Merge the results
   arrays_of_results <- NULL

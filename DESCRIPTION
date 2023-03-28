@@ -1,11 +1,12 @@
 Package: multiApply
 Title: Apply Functions to Multiple Multidimensional Arrays or Vectors
-Version: 2.1.3
+Version: 2.1.4
 Authors@R: c(
     person("BSC-CNS", role = c("aut", "cph")),
     person("Nicolau", "Manubens", , "nicolau.manubens@bsc.es", role = "aut"),
     person("Alasdair", "Hunter", , "alasdair.hunter@bsc.es", role = "aut"),
-    person("Nuria", "Perez", , "nuria.perez@bsc.es", role = "cre"))
+    person("An-Chi", "Ho", , "an.ho@bsc.es", role = c("ctb", "cre")),
+    person("Nuria", "Perez", , "nuria.perez@bsc.es", role = "ctb"))
 Description: The base apply function and its variants, as well as the related
     functions in the 'plyr' package, typically apply user-defined functions to a
     single argument (or a list of vectorized arguments in the case of mapply). The
@@ -24,18 +25,18 @@ Description: The base apply function and its variants, as well as the related
 Depends: R (>= 3.2.0)
 Imports: doParallel, foreach, plyr
 Suggests: testthat
-License: Apache License 2.0
+License: GPL-3
 URL: https://earth.bsc.es/gitlab/ces/multiApply
 BugReports: https://earth.bsc.es/gitlab/ces/multiApply/-/issues
 Encoding: UTF-8
-LazyData: true
-RoxygenNote: 5.0.0
+RoxygenNote: 7.2.0
 NeedsCompilation: no
-Packaged: 2021-02-01 16:31:18 UTC; nperez
+Packaged: 2023-03-28 12:35:34 UTC; aho
 Author: BSC-CNS [aut, cph],
   Nicolau Manubens [aut],
   Alasdair Hunter [aut],
-  Nuria Perez [cre]
-Maintainer: Nuria Perez <nuria.perez@bsc.es>
+  An-Chi Ho [ctb, cre],
+  Nuria Perez [ctb]
+Maintainer: An-Chi Ho <an.ho@bsc.es>
 Repository: CRAN
-Date/Publication: 2021-02-02 00:20:02 UTC
+Date/Publication: 2023-03-28 13:10:08 UTC

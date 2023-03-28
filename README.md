@@ -1,4 +1,8 @@
-## multiApply [![build status](https://earth.bsc.es/gitlab/ces/multiApply/badges/master/build.svg)](https://earth.bsc.es/gitlab/ces/multiApply/commits/master) [![CRAN version](http://www.r-pkg.org/badges/version/multiApply)](https://cran.r-project.org/package=multiApply) [![coverage report](https://earth.bsc.es/gitlab/ces/multiApply/badges/master/coverage.svg)](https://earth.bsc.es/gitlab/ces/multiApply/commits/master) [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0) [![CRAN RStudio Downloads](https://cranlogs.r-pkg.org/badges/multiApply)](https://cran.r-project.org/package=multiApply)
+## multiApply 
+[![CRAN version](http://www.r-pkg.org/badges/version/multiApply)](https://CRAN.R-project.org/package=multiApply)
+![coverage report](https://earth.bsc.es/gitlab/ces/multiApply/badges/master/coverage.svg) 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![CRAN RStudio Downloads](https://cranlogs.r-pkg.org/badges/multiApply)](https://CRAN.R-project.org/package=multiApply)
 
 This package includes the function `Apply` as its only function. It extends the `apply` function to applications in which a function needs to be applied simultaneously over multiple input arrays. Although this can be done manually with for loops and calls to the base `apply` function, it can often be a challenging task which can easily result in error-prone or memory-inefficient code.
 
@@ -51,12 +55,6 @@ In order to install and load the latest published version of the package on CRAN
 ```r
 install.packages('multiApply')
 library(multiApply)
-```
-
-Also, you can install the latest stable version from the GitHub repository as follows:
-
-```r
-devtools::install_git('https://earth.bsc.es/gitlab/ces/multiApply')
 ```
 
 ### How to use
